@@ -42,7 +42,53 @@ Three routes ([analytics-agent-evaluation-create](https://learn.microsoft.com/en
 
 Then the **Configure test set** panel takes a required **Name**, the **Test method**, and the **User profile**, and **Evaluate** runs it or **Save** stores it.
 
-## The CSV columns — unverified
+## The CSV columns — VERIFIED from the in-product template
+
+Downloaded from **Evaluate → New evaluation → CSV** on a live tenant, 2026-09-20. Filename `EvalConversationTemplate`. This is observation and supersedes everything inferred below.
+
+The file opens with a `#`-prefixed comment block, then the header row:
+
+```csv
+conversationNumber,question,response
+1,"I'm allergic to gluten. Do you have any pizza recommendations for me?","Unfortunately we're not offering any gluten-free pizzas."
+1,"Which pizza would you recommend for someone who loves meat?","Diavola"
+2,"What are the top attractions to see in Rome","The Colosseum, Roman Forum, Pantheon, Trevi Fountain, and Vatican City."
+```
+
+### Columns, quoted from the template
+
+| Column | Template's own description |
+|---|---|
+| `conversationNumber` | "Identifies each conversation. All questions and responses with the same conversation number will run as a single test case against the agent." |
+| `question` | "The user prompt that the agent will respond to." |
+| `response` | "The reference agent reply. This field is optional. **The agent response isn't compared to this reference answer.**" |
+
+That last line confirms independently, from the product itself, what the documentation said about General quality: the reference answer is never scored against.
+
+### Limits, quoted from the template
+
+- "8 question-and-answer pairs max per conversation."
+- "100 conversations max."
+- "**500 characters max per question**, including spaces."
+
+### Test methods
+
+- "Test methods are not included in this template. You can select them after importing the test cases."
+- "By default, the 'General quality' test method is added to the imported test set."
+
+Template's own reference: <https://go.microsoft.com/fwlink/?linkid=2335991>
+
+### What this corrected
+
+The standard-harness import format — `Question`, `Expected response`, 1,000 characters — **does not apply to this harness**. Three differences matter:
+
+1. **Different column names**, lower-camel and three of them.
+2. **500 characters per question**, not 1,000.
+3. **`conversationNumber` enables multi-turn test cases**, which the single-response standard-harness format has no way to express.
+
+The section below is retained as the record of what was inferred before the template was seen, and of why guessing at it was the wrong instinct.
+
+## The CSV columns — superseded (originally recorded as unverified)
 
 **Microsoft does not document the column headers for the GitHub Copilot harness CSV.** The page says only to download the template.
 
