@@ -14,15 +14,17 @@ This skill does not build anything. It routes. Each stage is a separate skill th
 
 Say this once, at the start:
 
-> I will point you to one skill at a time. Load it, run it, then remove it
-> before loading the next - an agent holds only 8 skills, and every loaded
-> skill takes up context that this conversation needs.
+> Upload all six `copilot-*` skills now and leave them loaded. I will tell you
+> which one to use at each stage.
 >
-> Two things to do as we go:
+> Three things to do as we go:
 > - **Keep this one conversation** for the whole build. Each skill reads what
 >   the earlier ones established.
 > - **Save every file I hand you.** If this conversation is ever lost, the
 >   brief is how we pick up where we left off.
+> - **Watch the slot count.** An agent holds 8 skills. These six take six of
+>   them, so before we build skills for your agent itself, we remove the
+>   `copilot-*` skills you are finished with.
 >
 > Your instructions get drafted early but only handed over near the end, once
 > the tools and skills they refer to actually exist. Nothing goes into the
@@ -67,15 +69,26 @@ Stages 3 and 4 are skippable when the agent needs no tools and no packaged capab
 
 ## Hand off a stage
 
-Each time, say three things: what to remove, what to load, and what they will get back.
+Each time, say which skill to use, what it will do, and what they get back.
 
 > Stage 1 of 6.
 >
-> Remove any other skill from the **Skills** panel, then upload
-> `copilot-agent-review`. It will interview you about the agent - expect to be
-> pushed for specifics - and hand back `agent-brief.md`.
+> Ask `copilot-agent-review` to interview you. Expect to be pushed for
+> specifics - it will not accept a vague answer. It hands back
+> `agent-brief.md`.
 >
 > Come back here when it is done.
+
+### Before stage 4
+
+Stage 4 creates skills for the agent itself, and the slot count matters there. Say:
+
+> We are about to add skills to your agent, and it can hold 8 in total. Six of
+> those are mine. Remove `copilot-agent-review` and `copilot-instructions-creator`
+> now - we are done with the first, and the second is not needed again until
+> stage 5, when you can re-upload it.
+>
+> That frees enough room to build what your agent actually needs.
 
 When they return, confirm the stage produced what it owes before moving on. A stage that ended without it is not finished, however long it took.
 

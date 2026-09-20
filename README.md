@@ -41,11 +41,11 @@ Source: [`diagnostics/script-probe/`](diagnostics/script-probe).
 2. **Build** tab > **Skills** > **Add skill** > **Upload a skill**.
 3. Drop in the `.zip`.
 
-Start with `copilot-studio-agent-creator` and let it tell you what to load next.
-
-Keep only the router plus the one skill you are using, and remove each skill when its stage is done. An agent holds at most 8 skills, and every loaded skill competes for the same context as your conversation.
+Upload all six, then start with `copilot-studio-agent-creator` and let it tell you which to use at each stage.
 
 Keep the whole build in **one conversation** — each skill reads what the earlier ones established.
+
+An agent holds **8 skills** in total. These six take six of them, so before you start building skills for the agent itself, remove the `copilot-*` skills you have finished with. The router tells you when.
 
 ## Remove
 
