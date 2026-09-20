@@ -1,6 +1,6 @@
 ---
 name: copilot-skill-creator
-description: Builds one custom Agent Skill for a Copilot Studio agent and hands back the SKILL.md ready to upload. Use when the user wants to package a capability as a skill, needs an agent to produce a document in a fixed format, or asks how to turn a task into a reusable skill.
+description: Builds one custom Agent Skill for a Copilot Studio agent - instructions, bundled references and runnable scripts - and hands it back ready to upload. Use when the user wants to package a capability as a skill, needs an agent to produce a document in a fixed format, or asks how to turn a task into a reusable skill.
 license: MIT
 ---
 
@@ -42,7 +42,16 @@ Otherwise it belongs in the agent's instructions. Say so rather than building it
 
 ## What a generated skill looks like
 
-Always a **single `SKILL.md` file**. No `scripts/` folder, no bundled resources - so the user uploads the `.md` directly with nothing to package.
+Start from a **single `SKILL.md`**, and add bundled files only when one of the tests below is met. A single file uploads as a bare `.md` with nothing to package; the moment anything is bundled, it has to be zipped.
+
+```
+skill-name/
+  SKILL.md        required
+  references/     material the agent reads
+  scripts/        code the agent runs
+```
+
+All three work on this harness - verified, not assumed. Bundled reference files are readable at runtime, and bundled scripts execute.
 
 ```markdown
 ---
@@ -76,30 +85,57 @@ Frontmatter is not negotiable. Copilot Studio silently skips a skill that breaks
 - Save as UTF-8 without a byte-order mark.
 - Keep the whole file under 20,000 characters.
 
-## Python goes inside SKILL.md
+## Inline code or a bundled script
 
-When a step needs code, write the Python **into `SKILL.md`** as a fenced block and tell the agent to run it. Never produce a separate script file.
+Both run. The choice is about size and reuse, not capability.
+
+**Write it inline in `SKILL.md`** when the code is short, used once, and reads as part of the instructions - roughly fifteen lines or fewer:
 
 ````markdown
-Run this to check the totals before writing anything:
+Check the totals before writing anything:
 
 ```python
-rows = [...]          # parsed from the workbook
 total = sum(r["amount"] for r in rows)
 print(f"{len(rows)} rows, total {total:,.2f}")
 ```
 
-If the totals do not match the cover sheet, stop and tell the user.
+If they do not match the cover sheet, stop and tell the user.
 ````
 
-Two constraints on that code, both from the sandbox it runs in:
+**Bundle it as `scripts/name.py`** when any of these is true:
 
-- **Prefer the standard library.** Microsoft publishes no list of preinstalled packages and nothing can be installed at runtime, so an import is a gamble.
-- **No network.** The sandbox has no internet access, so code cannot fetch anything. Data must already be in the conversation.
+- It runs to more than about fifteen lines.
+- More than one step uses it.
+- It must produce identical output every time, so the model must not be free to paraphrase it.
 
-If a library is genuinely needed, name it in the skill and have it say clearly what to do when the import fails, rather than failing silently.
+Bundled scripts must be **self-contained and print their result** - the agent reads standard output. Have the script fail loudly with a clear message rather than returning something plausible and wrong.
 
-Do not write code for building Office or PDF files. The harness creates and edits Word, Excel, PowerPoint and PDF files natively - code there duplicates what already works and adds a dependency you cannot verify.
+Never split one piece of logic across both places.
+
+### The sandbox
+
+Measured on a live tenant, not inferred:
+
+```
+python 3.12 on Linux
+```
+
+These packages are **available** - use them directly, no defensive import:
+
+`openpyxl` · `xlsxwriter` · `docx` · `pptx` · `reportlab` · `pypdf` · `PIL` · `pandas` · `numpy` · `matplotlib` · `bs4` · `lxml` · `yaml` · `jinja2`
+
+`fpdf` is **not** available - use `reportlab` for PDF generation.
+
+Two hard limits:
+
+- **No network.** `requests` imports successfully but every call fails, because the sandbox has no internet access at runtime. The same applies to anything in `bs4` or `lxml` that fetches rather than parses. All data must already be in the conversation.
+- **No installation.** Nothing can be pip-installed at runtime. Anything outside the list above is a gamble - if the skill needs one, say so in the skill and have it report clearly when the import fails.
+
+The list reflects one tenant at one moment and Microsoft guarantees nothing. If a generated skill depends on a package, tell the user to confirm it in their own tenant.
+
+### Do not script what the harness does natively
+
+The harness creates and edits Word, Excel, PowerPoint and PDF files by itself. Reach for `openpyxl` or `python-pptx` only when you need control the harness cannot give - an exact template, a formula, a precise cell format. For ordinary documents, describe the output and let the harness build it.
 
 ## Output format
 
@@ -124,20 +160,44 @@ Run this list and fix anything that fails:
 - `description` is one line and names the words a user would type.
 - The file is under 20,000 characters.
 - Every step is something the agent can actually do - no step assumes a tool the agent does not have.
-- Any inline Python is standard library, or names its dependency explicitly.
+- Any Python, inline or bundled, uses only packages confirmed available, and a bundled script prints its result.
 - The skill does one thing. If it has two unrelated jobs, split it and build the other next run.
 
 ## Hand off
 
-Produce the `SKILL.md` as a file the user can download. Name the file after the skill.
+### A single-file skill
+
+Produce the `SKILL.md` as a file the user can download, named after the skill. No packaging needed.
 
 > Open your agent in Copilot Studio, go to the **Build** tab, select **Skills**,
 > then **Add skill** > **Upload a skill**, and drop this file in. Test it in the
 > **Preview** tab by asking for the thing it does.
+
+### A skill with bundled files
+
+Hand over every file, and tell the user how to package it. **`SKILL.md` must sit at the root of the zip** - a bundle with everything inside a `skill-name/` folder is rejected with *"Bundle is missing a root-level SKILL.md file."*
+
+```
+skill-name.zip
+  SKILL.md              <- at the root, not inside a folder
+  references/...
+  scripts/...
+```
+
+> Put `SKILL.md` and the folders in one directory, then zip **the contents**,
+> not the directory itself. On Windows: open the folder, select all the items
+> inside it, right-click > **Send to** > **Compressed (zipped) folder**.
 >
-> If it does not appear after saving, the frontmatter failed validation - check
-> the file is UTF-8 without a BOM and that `name` uses only lowercase letters,
-> numbers and hyphens.
+> Before uploading, open the `.zip` and check `SKILL.md` is the first thing you
+> see. If you see a folder instead, you zipped one level too high.
+
+If the user builds bundles with PowerShell, warn them: `Compress-Archive` writes entry paths with backslashes, which the zip format does not allow, and the package can be refused with no useful error. Use `System.IO.Compression.ZipFile` with forward-slash entry names instead.
+
+### Either way
+
+> If the skill does not appear after saving, the frontmatter failed validation -
+> check the file is UTF-8 without a BOM and that `name` uses only lowercase
+> letters, numbers and hyphens.
 
 Then say what is left:
 

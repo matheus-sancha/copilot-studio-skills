@@ -186,6 +186,51 @@ The conclusion in the main findings stands and is now better founded: a bundled 
 
 Also noted: skill files are stored in "tenant-scoped SharePoint Embedded containers", sensitivity labels are retained and honored, and — a live preview bug — "Agents that have both skills and embedded files aren't supported yet."
 
+## Verified in a live tenant — 2026-09-20
+
+Everything above this point is documentation. This section is **observation**, from uploading real bundles to a real agent on the GitHub Copilot harness, and it outranks the documented claims where they differ.
+
+### Packaging
+
+- **`SKILL.md` must be at the archive root.** A bundle with the files wrapped in a `skill-name/` folder is rejected with: *"Upload failed. Bundle is missing a root-level SKILL.md file."* The flat shape documented above is correct; the spec's "name must match the parent directory name" rule does **not** mean the zip carries that directory.
+- **Watch the path separators.** PowerShell's `Compress-Archive` writes entry paths as `references\file.md` with backslashes. The ZIP format requires forward slashes. Build bundles with `System.IO.Compression.ZipFile` and explicit forward-slash entry names, or the package can be refused with no useful error.
+
+### Runtime capabilities
+
+Three distinct capabilities, all confirmed:
+
+| Capability | Result |
+|---|---|
+| A root-level `.zip` installs and appears in the components panel | works |
+| Files in `references/` are readable at runtime | works — the agent quoted a playbook it was pointed at |
+| Files in `scripts/` **execute** and return output | works — exit code 0 |
+
+The third is the significant one. Microsoft documents skill script execution only for declarative agents; no Learn page states it works on this harness. It does.
+
+### The sandbox
+
+```
+python:   3.12.14 (main, Aug 18 2026, 15:00:50) [GCC 13.2.0]
+platform: Linux-6.12.8+-x86_64-with-glibc2.38
+```
+
+Package availability, probed by import:
+
+| Status | Packages |
+|---|---|
+| **Available** | `openpyxl`, `xlsxwriter`, `docx` (python-docx), `pptx` (python-pptx), `reportlab`, `pypdf`, `PIL` (Pillow), `pandas`, `numpy`, `matplotlib`, `requests`, `bs4`, `lxml`, `yaml`, `jinja2` |
+| **Missing** | `fpdf` |
+
+Fifteen of sixteen probed packages are present. This replaces the earlier guidance to treat every import as a gamble — for these names, availability is a measured fact.
+
+> **`requests` imports but cannot be used.** Microsoft states the sandbox has no network access at runtime, so an HTTP call will fail regardless of the import succeeding. **Availability is not usability.** The same caution applies to anything in `bs4` or `lxml` that fetches rather than parses.
+
+Two caveats on the list itself: it reflects one tenant at one moment, and Microsoft still publishes no package guarantee. Re-run [`diagnostics/script-probe/`](../../diagnostics/script-probe) to check another tenant or a later date.
+
+### What this overturned
+
+The findings above originally concluded that "no bundled script should be load-bearing", reasoning from the absence of a published package list. That was the right call on the evidence then and is **wrong now**: scripts execute, and the packages that matter for document generation are present. See [What does copilot-skill-creator say about bundling scripts and resources?](https://github.com/matheus-sancha/copilot-studio-skills/issues/14).
+
 ## Billing
 
 Every page in the GitHub Copilot harness documentation set repeats the same notice: "Usage-based billing applies to using, building, testing, and evaluating agents. These actions might consume Copilot Credits" ([skills-overview](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/skills-overview)). Uploading this repo's six skills and running an interview through them costs credits, and the README should not pretend otherwise.
