@@ -79,7 +79,9 @@ Then **start a new chat** before you test. Nothing you just installed is live in
 
 Select the **X** next to the skill in the components panel, then confirm.
 
-Delete every `copilot-*` skill before you publish the agent.
+You do not need to plan for this: stage 7 opens by having you delete all six, before you upload anything the build produced. The slots are not free otherwise.
+
+Do it by hand only if you stopped part-way through the route. Either way, no `copilot-*` skill should be installed on an agent you publish — they are scaffolding.
 
 ## The route
 
@@ -89,7 +91,7 @@ Delete every `copilot-*` skill before you publish the agent.
 4. `copilot-skill-creator` — one skill per capability
 5. `copilot-instructions-creator` *(revise)* — produces `instructions.md`
 6. `copilot-evaluation-creator` — produces `evaluation-set.csv`
-7. **Apply it all, and publish** — the only stage that changes the agent; hands over `publish-copy.md` first
+7. **Apply it all, and publish** — the only stage that changes the agent. Hands over `publish-copy.md`, then an ordered install checklist whose first step deletes these six
 
 Instructions are written twice on purpose. They name the agent's tools, skills and connected agents, so they cannot be finished before those exist.
 
