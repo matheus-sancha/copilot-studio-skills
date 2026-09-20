@@ -184,9 +184,16 @@ Run this list and fix anything that fails:
 
 Produce the `SKILL.md` as a file the user can download, named after the skill. No packaging needed.
 
-> Open your agent in Copilot Studio, go to the **Build** tab, select **Skills**,
-> then **Add skill** > **Upload a skill**, and drop this file in. Test it in the
-> **Preview** tab by asking for the thing it does.
+> Save this file. To install it: **Build** tab > **Skills** > **Add skill** >
+> **Upload a skill**, and drop it in.
+>
+> **Then start a new chat before you test it.** A skill added to an agent does
+> not reach a conversation that is already running, so asking for it here would
+> tell you nothing.
+>
+> If you are working through the build route, do not upload it yet - stage 7
+> applies everything at once, and uploading now would cost you this
+> conversation.
 
 ### A skill with bundled files
 
@@ -210,9 +217,14 @@ If the user builds bundles with PowerShell, warn them: `Compress-Archive` writes
 
 ### Either way
 
-> If the skill does not appear after saving, the frontmatter failed validation -
-> check the file is UTF-8 without a BOM and that `name` uses only lowercase
-> letters, numbers and hyphens.
+> If the skill does not appear in the components panel after saving, the
+> frontmatter failed validation - check the file is UTF-8 without a BOM and that
+> `name` uses only lowercase letters, numbers and hyphens.
+>
+> If it appears but the agent ignores it, you are still in the conversation you
+> uploaded it from. Start a new chat.
+
+The second case is the one people misread. A skill that is installed but not active looks exactly like a skill that failed to install, and the agent itself cannot tell the difference - asked to read its own `SKILL.md`, it will find a `<!-- bic:bundle=... -->` marker rather than the instructions, because that is how a packaged skill is stored, and conclude the package is broken. It is not. Start a new chat before believing anything else.
 
 Then say what is left:
 

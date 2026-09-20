@@ -222,9 +222,14 @@ Show the instructions in the conversation and ask the user to correct them. **Pr
 
 Produce `instructions.md` as a file the user can download, containing the XML sections and nothing else - no preamble, no explanation, no code fence around the whole thing. Everything in that file gets pasted verbatim.
 
-> Open your agent in Copilot Studio, go to the **Build** tab, select the space
-> under **Instructions**, paste the whole file, and select **Save**. Then test
-> it in the **Preview** tab.
+> Save this file. To apply it: **Build** tab > the space under
+> **Instructions** > paste the whole file > **Save**.
+>
+> **Then start a new chat before you test it.** Instructions saved to an agent
+> do not reach a conversation that is already running.
+>
+> If you are working through the build route, do not paste it yet - stage 7
+> applies everything at once, and there is still a stage to go.
 >
 > Run `copilot-evaluation-creator` next to build the tests.
 >

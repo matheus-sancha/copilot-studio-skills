@@ -83,14 +83,19 @@ Put both in the plan, once:
 
 ## Hand off
 
-> Work through `tool-plan.md` in the **Build** tab. Some tools need you to sign in
-> or pick which actions to expose - do that as you add each one.
+> Save `tool-plan.md`. You work through it in **Build** > **Tools** at the end
+> of the build, not now - adding a tool does not reach a conversation that is
+> already running, and nothing left to do here needs the tools live. Some of
+> them will want you to sign in or pick which actions to expose; do that as you
+> add each one.
 >
 > Anything in the plan marked as a skill rather than a tool goes to
 > `copilot-skill-creator` instead.
 >
-> When the tools are in, run `copilot-evaluation-creator` - tool use is exactly
-> the kind of thing that works in a demo and fails on the tenth try.
+> Next: `copilot-skill-creator` if the plan names any skills, then back to
+> `copilot-instructions-creator` to revise the instructions against what you
+> planned. Tool use is exactly the kind of thing that works in a demo and fails
+> on the tenth try, so `copilot-evaluation-creator` matters here.
 
 > Running in an IDE with file access? Write `tool-plan.md` into the agent folder
 > instead of handing it over for download.
