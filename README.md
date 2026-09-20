@@ -23,6 +23,18 @@ Building, testing and evaluating agents on this harness consumes Copilot Credits
 
 All releases: [Releases](https://github.com/matheus-sancha/copilot-studio-skills/releases).
 
+### Diagnostic
+
+| Bundle | What it does | Download |
+|---|---|---|
+| `script-probe` | Reports whether bundled Python scripts execute in your tenant, and which packages are importable | [zip](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/script-probe.zip) |
+
+Not one of the six. Upload it, say **"run the probe"**, then delete it.
+
+It ships `scripts/probe.py` plus a marker file in `references/`, so the result is unambiguous: if the agent quotes the marker **and** returns the script output, bundled scripts execute. If it quotes the marker but produces no script output, files install and are readable but scripts do not run.
+
+Source: [`diagnostics/script-probe/`](diagnostics/script-probe).
+
 ## Install
 
 1. Open your agent in Copilot Studio.
@@ -57,8 +69,9 @@ Stages 3 and 4 are skippable when the agent needs no tools and no custom skills.
 ## Repository
 
 ```
-skills/     one folder per skill; SKILL.md plus any references
-docs/       research notes behind the design decisions
+skills/       one folder per skill; SKILL.md plus any references
+diagnostics/  throwaway probes for checking tenant behaviour
+docs/         research notes behind the design decisions
 ```
 
 Releases carry the uploadable `.zip` bundles. The repository itself stays source-only.
