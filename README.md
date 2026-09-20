@@ -14,26 +14,14 @@ Building, testing and evaluating agents on this harness consumes Copilot Credits
 
 | Skill | What it does | |
 |---|---|---|
-| `copilot-studio-agent-creator` | Routes you through the build, one stage at a time | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-studio-agent-creator.zip) |
-| `copilot-agent-review` | Interviews you until the agent's design is pinned down, then writes `agent-brief.md` | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-agent-review.zip) |
-| `copilot-instructions-creator` | Writes the agent's Instructions as XML-tagged sections | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-instructions-creator.zip) |
-| `copilot-find-skills-and-tools` | Works out which connectors, MCP servers and workflows the agent needs | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-find-skills-and-tools.zip) |
-| `copilot-skill-creator` | Builds a custom skill for the agent, including document-output playbooks | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-skill-creator.zip) |
-| `copilot-evaluation-creator` | Builds an evaluation set as a CSV for the Evaluate tab | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/copilot-evaluation-creator.zip) |
+| `copilot-studio-agent-creator` | Routes you through the build, one stage at a time | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-studio-agent-creator.zip) |
+| `copilot-agent-review` | Interviews you until the agent's design is pinned down, then writes `agent-brief.md` | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-agent-review.zip) |
+| `copilot-instructions-creator` | Writes the agent's Instructions as XML-tagged sections | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-instructions-creator.zip) |
+| `copilot-find-skills-and-tools` | Works out which connectors, MCP servers and workflows the agent needs | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-find-skills-and-tools.zip) |
+| `copilot-skill-creator` | Builds a custom skill for the agent, including document-output playbooks | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-skill-creator.zip) |
+| `copilot-evaluation-creator` | Builds an evaluation set as a CSV for the Evaluate tab | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-evaluation-creator.zip) |
 
 All releases: [Releases](https://github.com/matheus-sancha/copilot-studio-skills/releases).
-
-### Diagnostic
-
-| Bundle | What it does | |
-|---|---|---|
-| `script-probe` | Reports whether bundled Python scripts execute in your tenant, and which packages are importable | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/download/v0.1.0/script-probe.zip) |
-
-Not one of the six. Upload it, say **"run the probe"**, then delete it.
-
-It ships `scripts/probe.py` plus a marker file in `references/`, so the result is unambiguous: if the agent quotes the marker **and** returns the script output, bundled scripts execute. If it quotes the marker but produces no script output, files install and are readable but scripts do not run.
-
-Source: [`diagnostics/script-probe/`](diagnostics/script-probe).
 
 ## Install
 
