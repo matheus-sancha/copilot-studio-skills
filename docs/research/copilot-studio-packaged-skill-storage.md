@@ -189,3 +189,60 @@ None of these can be answered by reading. All are cheap.
   content.
 - Until check 1 or 2 comes back, the README's "Verified in a live tenant: the bundles install" is
   unsupported for the packaged path and should not be relied on.
+
+## Verified in a live tenant — 2026-09-20
+
+The three checks were run on the `Document Translator` agent. All seven skills had been uploaded as
+`.zip` from the release page. Results, and what each one closes:
+
+| Check | Result | Closes |
+|---|---|---|
+| Description field in the components panel | "All of them read as a sentence" | the frontmatter **is** parsed at install |
+| `...` > Download, `script-probe` | **1,514 bytes** — byte-identical to `script-probe.zip` | the platform stores the **whole archive** |
+| `...` > Download, `copilot-skill-creator` | ~16.8 KB — within rounding of the 16,934-byte bundle, nowhere near the 9,792-byte `SKILL.md` | same |
+| `script-probe` fired in Preview | reported okay, both fingerprints returned | the runtime receives the real body **and** the bundled files |
+
+Two things follow, and they overturn the reasoning that opened this document.
+
+**The `.zip` path works end to end.** A `1,514`-byte download cannot come from a bare `SKILL.md` upload —
+the file is 1,117 bytes. `script-probe` was still installed as a bundle when it fired, executed its
+bundled script, and read its bundled reference file. There is no packaging defect, and nothing in the
+released bundles needs to change.
+
+**Download does not behave as documented.** [skills-manage](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/skills-manage)
+says the download returns "a Markdown file containing the skill name and description in YAML front
+matter, plus instructions". For a packaged skill it returns the original `.zip` instead. That is better
+than documented — the round-trip does **not** lose bundled resources the way the earlier
+[skill contract note](copilot-studio-skill-contract.md) warned — but the documentation is wrong, and
+anything built on the documented behaviour is built on sand.
+
+### The real failure mode
+
+> "After the first error the agent asked me to re-upload them as `SKILL.md` files, which still worked
+> only when I started a new chat session."
+
+**A skill added to an agent does not reach a conversation already in progress.** The skill set appears
+to be bound when the conversation starts. Re-uploading was never what fixed it; starting a new chat
+was. The same fix would have worked without re-uploading anything.
+
+This explains every symptom in the original report:
+
+- The agent read its own `SKILL.md` and found a `bic:bundle` marker — the normal storage projection,
+  as established above — and concluded the package was broken.
+- It proposed re-uploading the three skills as unzipped folders. That would have appeared to work,
+  because the re-upload is followed by a new conversation, and the new conversation is the actual fix.
+- The failing subset changed between observations without the bundles changing, because what varied was
+  which uploads predated the open conversation.
+
+### The contradiction this exposes
+
+The README tells users to **keep the whole build in one conversation**, because each stage reads what
+the earlier ones established. The route's stage 4 hands the user a generated `SKILL.md` to upload. Those
+two cannot both hold: uploading the skill requires a new conversation, and a new conversation loses the
+design. This is a route defect, not a packaging defect, and it is the thing actually worth fixing.
+
+### A caution on the description
+
+The name-shaped `description: copilot-find-skills-and-tools` reported at the top of this document was
+never in the store. The components panel shows real descriptions for every skill. It exists only in the
+stub the agent read, so it is an artifact of the projection — not evidence of a failed install.
