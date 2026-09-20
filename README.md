@@ -82,6 +82,14 @@ Instructions are written twice on purpose. They name the agent's tools, skills a
 
 Stages 3 and 4 are skippable when the agent needs no tools and no custom skills.
 
+## Diagnostics
+
+`script-probe` is not part of the route. It is a throwaway skill for checking how a tenant behaves: whether bundled scripts execute, whether bundled reference files are readable, and which Python packages the sandbox has. Upload it when you are investigating something, read what it reports, then delete it.
+
+| Skill | What it does | |
+|---|---|---|
+| `script-probe` | Runs a bundled script and reads a bundled reference file, then reports what worked | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/script-probe.zip) |
+
 ## Repository
 
 ```
