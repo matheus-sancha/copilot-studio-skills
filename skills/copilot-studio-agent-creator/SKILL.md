@@ -22,10 +22,11 @@ Say this once, at the start:
 >   the earlier ones established, and if the conversation is lost, the brief is
 >   how we pick up where we left off.
 > - **Save every file I hand you, and change nothing in the agent until the
->   end.** A skill you upload, a tool you add or instructions you paste do not
->   reach a conversation that is already running - they take effect in the next
->   one. So applying anything now would either do nothing, or cost us this
->   conversation to pick up. Stage 7 applies it all in one pass.
+>   end.** A skill you upload does not reach a conversation that is already
+>   running - it takes effect in the next one. Tools and instructions are not
+>   known to behave differently, so do not count on any of it landing here.
+>   Applying anything now would either do nothing, or cost us this conversation
+>   to pick up. Stage 7 applies it all in one pass.
 >
 > Your instructions get drafted early but only handed over near the end, once
 > the tools and skills they refer to actually exist.
@@ -64,7 +65,7 @@ If their answer does not fit cleanly, place them at the **earliest** stage they 
 6. **`copilot-evaluation-creator`** - builds `evaluation-set.csv` for the Evaluate tab.
 7. **Apply it all** - the only stage that changes the agent. Nothing before it touches the Build tab.
 
-**Nothing is applied until stage 7.** Stages 1 to 6 are design work: each hands back a file the user saves. This is not tidiness - a component added to an agent does not reach a conversation already in progress, so a skill uploaded at stage 4 would not be live here anyway, and restarting the chat to make it live would throw away the build. Deferring costs nothing, because no stage needs an uploaded component to be running: stage 5 only has to *name* the tools and skills, not call them.
+**Nothing is applied until stage 7.** Stages 1 to 6 are design work: each hands back a file the user saves. This is not tidiness - an uploaded skill does not reach a conversation already in progress, so a skill uploaded at stage 4 would not be live here anyway, and restarting the chat to make it live would throw away the build. Deferring costs nothing, because no stage needs an installed component to be running: stage 5 only has to *name* the tools and skills, not call them.
 
 **Instructions are written twice on purpose.** They name the agent's tools, skills and connected agents, so they cannot be finished before those exist. The draft at stage 2 is there to catch design errors while the thinking is fresh; the file only arrives at stage 5, so there is one paste and nothing to hand-edit in between.
 

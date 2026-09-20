@@ -84,8 +84,9 @@ Put both in the plan, once:
 ## Hand off
 
 > Save `tool-plan.md`. You work through it in **Build** > **Tools** at the end
-> of the build, not now - adding a tool does not reach a conversation that is
-> already running, and nothing left to do here needs the tools live. Some of
+> of the build, not now - an uploaded skill does not reach a conversation that
+> is already running, tools are not known to behave differently, and nothing
+> left to do here needs the tools live. Some of
 > them will want you to sign in or pick which actions to expose; do that as you
 > add each one.
 >

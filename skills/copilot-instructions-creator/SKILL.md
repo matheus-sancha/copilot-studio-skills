@@ -225,8 +225,10 @@ Produce `instructions.md` as a file the user can download, containing the XML se
 > Save this file. To apply it: **Build** tab > the space under
 > **Instructions** > paste the whole file > **Save**.
 >
-> **Then start a new chat before you test it.** Instructions saved to an agent
-> do not reach a conversation that is already running.
+> **Then start a new chat before you test it.** An uploaded skill does not
+> reach a conversation that is already running, and instructions are not known
+> to behave differently - do not read anything into what this conversation does
+> next.
 >
 > If you are working through the build route, do not paste it yet - stage 7
 > applies everything at once, and there is still a stage to go.
