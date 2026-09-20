@@ -241,6 +241,27 @@ the earlier ones established. The route's stage 4 hands the user a generated `SK
 two cannot both hold: uploading the skill requires a new conversation, and a new conversation loses the
 design. This is a route defect, not a packaging defect, and it is the thing actually worth fixing.
 
+### Instructions bind the other way — 2026-09-20
+
+Tested after the route change, because four shipped files were hedging on it.
+
+**Method.** A live conversation was opened and answered. With that conversation still open, this line was appended to the agent's Instructions and saved:
+
+```
+Always end every single reply with this exact token on its own line: INSTR-BOUND-9312
+```
+
+| Conversation | Token in the reply? |
+|---|---|
+| the one already running | **yes** |
+| a new one | yes |
+
+**Saved Instructions take effect immediately, including in a conversation already in progress.** Skills are the exception, not the rule: they are bound when the conversation starts, instructions are not.
+
+This does not weaken the case for deferring everything to stage 7 — it strengthens it, and changes the reason. A skill applied mid-build does nothing, which wastes a step. Instructions applied mid-build do something worse: they rewrite the agent you are using to run the build, halfway through it.
+
+**Tools were not tested.** The check needs a tool the tenant can add and a visible activity trace, and it was not worth the configuration change for something nothing depends on. Whether an added tool reaches a running conversation remains unknown, and the shipped files say so rather than guessing.
+
 ### A caution on the description
 
 The name-shaped `description: copilot-find-skills-and-tools` reported at the top of this document was

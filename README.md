@@ -47,7 +47,7 @@ Skills activate on what you ask for, not on their filename. You describe what yo
 
 **Keep the whole build in one conversation.** Each skill reads what the earlier ones established, so a new chat loses the design.
 
-**Change nothing in the agent until the end.** Stages 1 to 6 are design work — each hands you a file to save. You apply them all at stage 7, in one pass. This is not tidiness: applying something mid-build either does nothing in the conversation you are in, or costs you that conversation to make it take effect. Nothing in the route needs an installed component to be running, so deferring costs you nothing.
+**Change nothing in the agent until the end.** Stages 1 to 6 are design work — each hands you a file to save. You apply them all at stage 7, in one pass. This is not tidiness, and the two components fail in opposite directions: a skill you upload does not reach the conversation you are in *at all*, while instructions land *immediately* and rewrite the agent you are building with, halfway through. Nothing in the route needs an applied component, so deferring costs you nothing.
 
 **To reach a specific skill,** ask for the thing it does — "interview me about this agent", "write the instructions", "build me an evaluation set". Naming the skill outright works too if it does not fire on the description alone.
 
@@ -126,11 +126,12 @@ Checked on 2026-09-20, on a live agent built with the GitHub Copilot harness. Ea
 | Six skills install into one agent together | all six installed, all six listed in the components panel |
 | An installed skill does not reach a conversation already running | a skill that looked inert became active in a new chat, unchanged |
 | A packaged skill's instructions survive upload | the skill downloaded back byte-identical to the uploaded `.zip` |
+| Saved Instructions *do* reach a conversation already running | a fingerprint token added mid-conversation appeared in the very next reply |
 
 **Not checked, and stated here rather than implied:**
 
 - **That each of the six activates on a plain-language request.** Several were, not all six individually. A skill activates on its `description`, so this is the claim most worth testing in your own tenant.
-- **Whether tool and instruction changes bind to a conversation the way a skill does.** The route defers them regardless, so nothing here depends on it.
+- **Whether an added tool reaches a conversation already running.** Instructions were tested and do; skills were tested and do not. Tools were not. The route defers them regardless, so nothing here depends on it.
 - **The 8-skill ceiling.** Microsoft publishes that figure for Agent Builder, a different surface. No Copilot Studio page states a limit for this harness, and it has not been tested here.
 
 Microsoft's documentation is wrong in one place that matters: downloading a packaged skill returns the original `.zip`, not the Markdown file [the docs describe](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/skills-manage). Better than documented — the round-trip keeps bundled files — but do not build on the documented behaviour.

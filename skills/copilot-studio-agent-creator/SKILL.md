@@ -22,11 +22,11 @@ Say this once, at the start:
 >   the earlier ones established, and if the conversation is lost, the brief is
 >   how we pick up where we left off.
 > - **Save every file I hand you, and change nothing in the agent until the
->   end.** A skill you upload does not reach a conversation that is already
->   running - it takes effect in the next one. Tools and instructions are not
->   known to behave differently, so do not count on any of it landing here.
->   Applying anything now would either do nothing, or cost us this conversation
->   to pick up. Stage 7 applies it all in one pass.
+>   end.** A skill you upload does not reach this conversation at all - it takes
+>   effect in the next one. Instructions are the opposite: they land
+>   immediately, so pasting them now would rewrite the agent you are building
+>   with, halfway through the build. Both are reasons to wait. Stage 7 applies
+>   it all in one pass.
 >
 > Your instructions get drafted early but only handed over near the end, once
 > the tools and skills they refer to actually exist.
