@@ -42,7 +42,16 @@ Otherwise it belongs in the agent's instructions. Say so rather than building it
 
 ## What a generated skill looks like
 
-Start from a **single `SKILL.md`**, and add bundled files only when one of the tests below is met. A single file uploads as a bare `.md` with nothing to package; the moment anything is bundled, it has to be zipped.
+Start from a **single `SKILL.md`**, and add bundled files only when one of the tests below is met. The upload format follows from that choice - it is not a separate decision:
+
+| Shape | Ships as | How Copilot Studio stores it |
+|---|---|---|
+| A single `SKILL.md` | a bare `.md` | the instructions, inline |
+| `SKILL.md` plus anything | a `.zip`, `SKILL.md` at the root | the archive, with the body behind a `<!-- bic:bundle=... -->` pointer |
+
+**A `.zip` costs one thing worth knowing.** Both formats install and activate identically - this is not about whether the skill works. But an agent asked to read its own `SKILL.md` finds the pointer instead of the instructions, and will report that the package is empty or broken. It is neither. Never let that reading talk the user into repackaging a skill that is fine: a skill that seems inert has almost always been installed into a conversation that was already running, and the fix is a new chat, not a new package.
+
+That asymmetry is a reason to keep a skill single-file when it can be, not a reason to avoid bundling something it genuinely needs.
 
 ```
 skill-name/
@@ -177,6 +186,7 @@ Run this list and fix anything that fails:
 - Every step is something the agent can actually do - no step assumes a tool the agent does not have.
 - Any Python, inline or bundled, uses only packages confirmed available, and a bundled script prints its result.
 - The skill does one thing. If it has two unrelated jobs, split it and build the other next run.
+- It is a single file unless something is genuinely bundled. A `.zip` holding one `SKILL.md` buys nothing and costs self-readability.
 
 ## Hand off
 
@@ -197,7 +207,7 @@ Produce the `SKILL.md` as a file the user can download, named after the skill. N
 
 ### A skill with bundled files
 
-Hand over every file, and tell the user how to package it. **`SKILL.md` must sit at the root of the zip** - a bundle with everything inside a `skill-name/` folder is rejected with *"Bundle is missing a root-level SKILL.md file."*
+This is the only case that needs a `.zip`. Hand over every file, and tell the user how to package it. **`SKILL.md` must sit at the root of the zip** - a bundle with everything inside a `skill-name/` folder is rejected with *"Bundle is missing a root-level SKILL.md file."*
 
 ```
 skill-name.zip
@@ -214,6 +224,8 @@ skill-name.zip
 > see. If you see a folder instead, you zipped one level too high.
 
 If the user builds bundles with PowerShell, warn them: `Compress-Archive` writes entry paths with backslashes, which the zip format does not allow, and the package can be refused with no useful error. Use `System.IO.Compression.ZipFile` with forward-slash entry names instead.
+
+Both traps are silent - a bad archive looks like a bad skill. Anyone packaging more than one skill should script it rather than repeat it by hand.
 
 ### Either way
 

@@ -115,7 +115,25 @@ The script is where the packaging traps live. It refuses a skill whose frontmatt
 
 ## Status
 
-Verified in a live tenant: the bundles install, bundled reference files are readable, bundled scripts execute, all six skills load together, and each one activates correctly.
+Checked on 2026-09-20, on a live agent built with the GitHub Copilot harness. Each row says how, so you can judge it or repeat it.
+
+| Claim | How it was checked |
+|---|---|
+| A `.zip` with `SKILL.md` at its root installs | uploaded; a bundle wrapped in a folder is rejected with *"Bundle is missing a root-level SKILL.md file"* |
+| A bare `SKILL.md` installs | uploaded; stored inline rather than behind a bundle pointer |
+| Bundled `references/` are readable at runtime | the agent quoted a marker string that exists nowhere but inside the bundle |
+| Bundled `scripts/` execute | `script-probe` ran its bundled script and returned its output |
+| Six skills install into one agent together | all six installed, all six listed in the components panel |
+| An installed skill does not reach a conversation already running | a skill that looked inert became active in a new chat, unchanged |
+| A packaged skill's instructions survive upload | the skill downloaded back byte-identical to the uploaded `.zip` |
+
+**Not checked, and stated here rather than implied:**
+
+- **That each of the six activates on a plain-language request.** Several were, not all six individually. A skill activates on its `description`, so this is the claim most worth testing in your own tenant.
+- **Whether tool and instruction changes bind to a conversation the way a skill does.** The route defers them regardless, so nothing here depends on it.
+- **The 8-skill ceiling.** Microsoft publishes that figure for Agent Builder, a different surface. No Copilot Studio page states a limit for this harness, and it has not been tested here.
+
+Microsoft's documentation is wrong in one place that matters: downloading a packaged skill returns the original `.zip`, not the Markdown file [the docs describe](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/skills-manage). Better than documented — the round-trip keeps bundled files — but do not build on the documented behaviour.
 
 The sandbox and format facts behind these skills are recorded in [`docs/research/`](docs/research), marked according to whether they came from Microsoft's documentation or from direct observation.
 
