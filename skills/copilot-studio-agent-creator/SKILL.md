@@ -63,7 +63,7 @@ If their answer does not fit cleanly, place them at the **earliest** stage they 
 4. **`copilot-skill-creator`** - packages a capability as a skill. Repeat per skill.
 5. **`copilot-instructions-creator`** *(revise)* - rewrites the sections that reference tools, skills and connected agents, then produces `instructions.md`.
 6. **`copilot-evaluation-creator`** - builds `evaluation-set.csv` for the Evaluate tab.
-7. **Apply it all** - the only stage that changes the agent. Nothing before it touches the Build tab.
+7. **Apply it all, and publish** - the only stage that changes the agent. Hands over `publish-copy.md` first, then an ordered checklist. Nothing before it touches the Build tab.
 
 **Nothing is applied until stage 7.** Stages 1 to 6 are design work: each hands back a file the user saves. This is not tidiness - an uploaded skill does not reach a conversation already in progress, so a skill uploaded at stage 4 would not be live here anyway, and restarting the chat to make it live would throw away the build. Deferring costs nothing, because no stage needs an installed component to be running: stage 5 only has to *name* the tools and skills, not call them.
 
@@ -83,13 +83,69 @@ Each time, say which skill to use, what it will do, and what they get back.
 >
 > Come back here when it is done.
 
-### Stage 7 - apply it all
+### Stage 7 - apply it all, and publish
 
-The only stage that changes the agent. Reach it when stages 1 to 6 have produced what they owe, and hand over an ordered checklist built from what **this** build actually produced - naming each generated skill, listing the tools from `tool-plan.md`, and dropping any line for a stage that was skipped.
+The only stage that changes the agent. Reach it when stages 1 to 6 have produced what they owe.
+
+Hand over **two things in the same message, copy first**. Step 1 of the checklist deletes this skill, so anything not handed over now cannot be handed over at all.
+
+#### First, `publish-copy.md`
+
+Copilot Studio refuses to publish an agent that has no **name, description or instructions**. The description is the one piece of user-facing copy the product demands, and a maker who has just spent six stages on the agent should not be writing it from a blank box.
+
+Produce a file with three parts, drawn from the brief - not invented:
+
+| Part | Length | Built from | Where it goes |
+|---|---|---|---|
+| **Short description** | one or two sentences | role, users, the headline task | the **Description** field - required before Copilot Studio will publish |
+| **Long description** | three or four short paragraphs | tasks, inputs, knowledge, out of scope | **no field on this harness.** For the organization catalog entry, a Teams or Microsoft 365 listing, or the message announcing it |
+| **Disclaimer** | three or four lines | rules, escalation, anything regulated in the brief | no field either. Put it at the foot of the long description, and consider a line in the agent's own instructions |
+
+Be straight about that third column. Only the short description has a documented home; the other two are copy the user places wherever they announce the agent. Do not tell them to paste it into a field that does not exist.
+
+```markdown
+## Short description
+
+Drafts first-pass credit memos for the SME lending team from borrower
+financials, so an analyst starts from a filled template rather than a blank one.
+
+## Long description
+
+Give it a borrower financial pack and it drafts all five standard sections of
+the credit memo, ending with the three figures the committee always asks for.
+Give it last year's memo alongside new financials and it updates the memo and
+lists what changed.
+
+It answers policy questions from the lending policy knowledge source and quotes
+the clause it used. Where the policy is silent it says so, and answers from
+general practice - labelled as such.
+
+It will not state a credit rating the committee has not signed off, and it will
+not estimate a figure that is missing from the pack. It asks instead.
+
+## Disclaimer
+
+This agent drafts; it does not decide. Every memo is a first pass and must be
+reviewed by the analyst who owns the file before it goes to committee.
+
+Figures come from the pack you supply. Check them against the source before
+relying on any number in the output.
+
+It is not a system of record. Nothing it produces is a regulated record until a
+human commits it as one.
+```
+
+Match the agent. A read-only internal helper does not need a regulated-record warning, and pretending otherwise teaches people to skip disclaimers. Write what is actually true of **this** agent, from what the brief captured - and if the brief captured no rules and no escalation, say the disclaimer is thin because the design never named a limit, rather than padding it.
+
+#### Then, the checklist
+
+Build it from what **this** build actually produced - naming each generated skill, listing the tools from `tool-plan.md`, and dropping any line for a stage that was skipped.
 
 Tell them to do it in this order, and say why the order matters:
 
 > Stage 7 of 7. Nothing left to decide - go and apply it.
+>
+> **Save `publish-copy.md` before step 1.** Step 1 deletes me.
 >
 > 1. **Build** > **Skills**: delete all six `copilot-*` skills. Do this first -
 >    an agent holds 8, and mine are using six of the slots.
@@ -99,6 +155,9 @@ Tell them to do it in this order, and say why the order matters:
 > 5. **Start a new chat**, then test in **Preview**. None of the above is live
 >    in a conversation that was already open - including this one.
 > 6. **Evaluate** tab > **New evaluation**: drop in `evaluation-set.csv`.
+> 7. When the tests look right: paste the short description into **Description**,
+>    then **Publish**. The long description and disclaimer go wherever you
+>    announce the agent.
 >
 > Keep `agent-brief.md`. It is the design record, and the only way back if you
 > want to change something later.
@@ -115,7 +174,7 @@ When they return from any stage, confirm it produced what it owes before moving 
 | 4 | one skill file per capability |
 | 5 | `instructions.md` |
 | 6 | `evaluation-set.csv` |
-| 7 | the agent actually changed, and a new chat started to test it |
+| 7 | `publish-copy.md`, then the agent actually changed, and a new chat started to test it |
 
 ## When the thread is lost
 

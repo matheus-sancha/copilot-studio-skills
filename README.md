@@ -53,7 +53,9 @@ Skills activate on what you ask for, not on their filename. You describe what yo
 
 ### What comes back, and where it goes
 
-Each stage hands you a file. **Save them all and apply nothing until stage 7**, which walks you through it in this order:
+Each stage hands you a file. **Save them all and apply nothing until stage 7**, which walks you through it in this order.
+
+Save `publish-copy.md` *before* you start the checklist — its first step deletes the router that just gave it to you.
 
 | File | Where it goes, at stage 7 |
 |---|---|
@@ -62,8 +64,9 @@ Each stage hands you a file. **Save them all and apply nothing until stage 7**, 
 | `tool-plan.md` | Work through it in **Build** > **Tools**, adding what it lists. |
 | `instructions.md` | Paste the whole file into **Build** > **Instructions**, then **Save**. |
 | `evaluation-set.csv` | **Evaluate** tab > **New evaluation**, drag it onto the **Data source** area. |
+| `publish-copy.md` | The short description goes in **Build** > **Description**, which Copilot Studio requires before it will publish. The long description and disclaimer have no field on this harness — use them for the catalog entry, a Teams listing, or the message announcing the agent. |
 
-Then **start a new chat** before you test. Nothing you just installed is live in a conversation that was already open.
+Then **start a new chat** before you test. Nothing you just installed is live in a conversation that was already open. Publish once the tests look right.
 
 ### If a skill does not respond as expected
 
@@ -86,7 +89,7 @@ Delete every `copilot-*` skill before you publish the agent.
 4. `copilot-skill-creator` — one skill per capability
 5. `copilot-instructions-creator` *(revise)* — produces `instructions.md`
 6. `copilot-evaluation-creator` — produces `evaluation-set.csv`
-7. **Apply it all** — the only stage that changes the agent
+7. **Apply it all, and publish** — the only stage that changes the agent; hands over `publish-copy.md` first
 
 Instructions are written twice on purpose. They name the agent's tools, skills and connected agents, so they cannot be finished before those exist.
 
