@@ -14,12 +14,12 @@ Building, testing and evaluating agents on this harness consumes Copilot Credits
 
 | Skill | What it does | |
 |---|---|---|
-| `copilot-studio-agent-creator` | Routes you through the build, one stage at a time | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-studio-agent-creator.zip) |
-| `copilot-agent-review` | Interviews you until the agent's design is pinned down, then writes `agent-brief.md` | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-agent-review.zip) |
-| `copilot-instructions-creator` | Writes the agent's Instructions as XML-tagged sections | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-instructions-creator.zip) |
-| `copilot-find-skills-and-tools` | Works out which connectors, MCP servers and workflows the agent needs | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-find-skills-and-tools.zip) |
+| `copilot-studio-agent-creator` | Routes you through the build, one stage at a time | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-studio-agent-creator.md) |
+| `copilot-agent-review` | Interviews you until the agent's design is pinned down, then writes `agent-brief.md` | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-agent-review.md) |
+| `copilot-instructions-creator` | Writes the agent's Instructions as XML-tagged sections | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-instructions-creator.md) |
+| `copilot-find-skills-and-tools` | Works out which connectors, MCP servers and workflows the agent needs | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-find-skills-and-tools.md) |
 | `copilot-skill-creator` | Builds a custom skill for the agent, including document-output playbooks | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-skill-creator.zip) |
-| `copilot-evaluation-creator` | Builds an evaluation set as a CSV for the Evaluate tab | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-evaluation-creator.zip) |
+| `copilot-evaluation-creator` | Builds an evaluation set as a CSV for the Evaluate tab | [Download](https://github.com/matheus-sancha/copilot-studio-skills/releases/latest/download/copilot-evaluation-creator.md) |
 
 All releases: [Releases](https://github.com/matheus-sancha/copilot-studio-skills/releases).
 
@@ -27,7 +27,9 @@ All releases: [Releases](https://github.com/matheus-sancha/copilot-studio-skills
 
 1. Open your agent in Copilot Studio.
 2. **Build** tab > **Skills** > **Add skill** > **Upload a skill**.
-3. Drop in the `.zip`. Repeat for all six.
+3. Drop in the file. Repeat for all six.
+
+Five of them are a single `.md`. `copilot-skill-creator` is a `.zip`, because it carries reference files and scripts and only the `.zip` format brings those along. Copilot Studio accepts both.
 
 An agent holds **8 skills** in total, and these six take six of them. Leave all six loaded for the whole build — nothing else is installed until the end, so the slots are never contested. The last stage deletes them and installs what you built.
 
@@ -104,9 +106,12 @@ Stages 3 and 4 are skippable when the agent needs no tools and no custom skills.
 skills/       one folder per skill; SKILL.md plus any references
 diagnostics/  throwaway probes for checking tenant behaviour
 docs/         research notes behind the design decisions
+scripts/      builds the release assets from source
 ```
 
-Releases carry the uploadable `.zip` bundles. The repository itself stays source-only.
+Releases carry the uploadable assets, built by `scripts/build-release.ps1`: a bare `.md` for a skill that is a single `SKILL.md`, a `.zip` for one that bundles anything. The repository itself stays source-only.
+
+The script is where the packaging traps live. It refuses a skill whose frontmatter `name` does not match its folder, writes zip entries with forward slashes — `Compress-Archive` writes backslashes, which the format forbids and Copilot Studio can reject with no useful error — and `-Verify` checks every archive has `SKILL.md` at its root and no file carries a UTF-8 BOM.
 
 ## Status
 
