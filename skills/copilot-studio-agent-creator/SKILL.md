@@ -23,6 +23,10 @@ Say this once, at the start:
 >   the earlier ones established.
 > - **Save every file I hand you.** If this conversation is ever lost, the
 >   brief is how we pick up where we left off.
+>
+> Your instructions get drafted early but only handed over near the end, once
+> the tools and skills they refer to actually exist. Nothing goes into the
+> Build tab's Instructions box until then.
 
 ## Place them
 
@@ -42,27 +46,30 @@ Reply A, B, C or D - or describe where you are.
 | Answer | Load next |
 |---|---|
 | A | `copilot-agent-review` |
-| B | `copilot-instructions-creator` |
+| B | `copilot-instructions-creator` (draft pass) |
 | C | `copilot-find-skills-and-tools` |
-| D | `copilot-evaluation-creator` |
+| D | `copilot-instructions-creator` (revise pass), then `copilot-evaluation-creator` |
 
 If their answer does not fit cleanly, place them at the **earliest** stage they have not genuinely completed. A thin brief is not a brief.
 
 ## The route
 
 1. **`copilot-agent-review`** - interviews them and produces `agent-brief.md`.
-2. **`copilot-instructions-creator`** - turns the brief into `instructions.md` for the Build tab.
-3. **`copilot-find-skills-and-tools`** - recommends connectors, tools and pre-built skills.
+2. **`copilot-instructions-creator`** *(draft)* - drafts the instructions in the conversation. **No file yet.**
+3. **`copilot-find-skills-and-tools`** - recommends connectors, tools and pre-built skills; produces `tool-plan.md`.
 4. **`copilot-skill-creator`** - packages a capability as a skill. Repeat per skill.
-5. **`copilot-evaluation-creator`** - builds `evaluation-set.csv` for the Evaluate tab.
+5. **`copilot-instructions-creator`** *(revise)* - rewrites the sections that reference tools, skills and connected agents, then produces `instructions.md`.
+6. **`copilot-evaluation-creator`** - builds `evaluation-set.csv` for the Evaluate tab.
 
-Stages 3 and 4 are skippable when the agent needs no tools and no packaged capabilities. Stages 1, 2 and 5 are not - an agent with no brief, no instructions or no tests is not finished.
+**Instructions are written twice on purpose.** They name the agent's tools, skills and connected agents, so they cannot be finished before those exist. The draft at stage 2 is there to catch design errors while the thinking is fresh; the file only arrives at stage 5, so there is one paste and nothing to hand-edit in between.
+
+Stages 3 and 4 are skippable when the agent needs no tools and no packaged capabilities - and when both are skipped, stage 5 is just a confirmation that the draft still stands. Stages 1, 2 and 6 are never skippable: an agent with no brief, no instructions or no tests is not finished.
 
 ## Hand off a stage
 
 Each time, say three things: what to remove, what to load, and what they will get back.
 
-> Stage 1 of 5.
+> Stage 1 of 6.
 >
 > Remove any other skill from the **Skills** panel, then upload
 > `copilot-agent-review`. It will interview you about the agent - expect to be
@@ -70,7 +77,16 @@ Each time, say three things: what to remove, what to load, and what they will ge
 >
 > Come back here when it is done.
 
-When they return, confirm the stage produced its artifact before moving on. A stage that ended without its file is not finished, however long it took.
+When they return, confirm the stage produced what it owes before moving on. A stage that ended without it is not finished, however long it took.
+
+| Stage | Owes |
+|---|---|
+| 1 | `agent-brief.md` |
+| 2 | a draft the user has read and agreed - **no file** |
+| 3 | `tool-plan.md` |
+| 4 | one skill file per capability |
+| 5 | `instructions.md` |
+| 6 | `evaluation-set.csv` |
 
 ## When the thread is lost
 

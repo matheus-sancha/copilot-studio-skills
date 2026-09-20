@@ -1,6 +1,6 @@
 ---
 name: copilot-instructions-creator
-description: Writes the Instructions for a Copilot Studio agent as XML-tagged sections - role, tone, tasks, instructions, rules, plus extras the agent needs - and hands back instructions.md to paste into the Build tab. Use when the user wants to write or rewrite an agent's instructions, or has an agent brief ready to turn into instructions.
+description: Writes the Instructions for a Copilot Studio agent as XML-tagged sections - role, tone, tasks, instructions, rules, plus knowledge routing, tool use and connected agents where they apply. Drafts them early, revises them once tools and skills exist, then hands back instructions.md to paste into the Build tab. Use when the user wants to write, revise or review an agent's instructions.
 license: MIT
 ---
 
@@ -9,6 +9,16 @@ license: MIT
 Turn an agent brief into the Instructions that go in the Copilot Studio **Build** tab.
 
 Instructions load on every single turn. Everything here is paid for continuously, so nothing goes in that does not change what the agent does.
+
+## Two passes
+
+This skill runs **twice** in a build, and the difference matters.
+
+**Draft pass** - right after the brief exists, before tools and skills. Produce the full instructions **in the conversation** and get the user to correct them. **Emit no file.** The sections that reference tools, skills and connected agents cannot be accurate yet, and instructions pasted into the Build tab now would only be edited by hand and then overwritten.
+
+**Revise pass** - after tools and skills exist. Take the draft from this conversation, rewrite the sections that reference them, and **now** emit `instructions.md`. One file, one paste, at the end.
+
+Work out which pass you are in from the conversation: if tools or skills have been added since the draft, you are revising. If there is no draft yet, you are drafting. If genuinely unclear, ask.
 
 ## Start
 
@@ -22,9 +32,15 @@ Do not interview the user yourself. That is the other skill's job, and doing it 
 
 **Brief present?** Draft all five mandatory sections, then ask only about genuine gaps. Do not re-ask what the brief already answers.
 
+**Revising?** Say what changed and what you left alone, so the user can trust the result without rereading all of it:
+
+> Rewrote `<tasks>` to name the CRM tool, added `<tool_use>` and
+> `<knowledge_routing>`. Left `<role>`, `<tone>` and `<rules>` exactly as we
+> agreed them.
+
 ## What goes where
 
-The brief has ten slots. They do not map one-to-one:
+The brief has twelve slots. They do not map one-to-one:
 
 | Brief slot | Where it lands |
 |---|---|
@@ -36,6 +52,7 @@ The brief has ten slots. They do not map one-to-one:
 | Outputs | `<tasks>`, and `<output_format>` when a format is fixed |
 | Rules | `<rules>` |
 | Escalation | `<escalation>` |
+| Connected agents | `<connected_agents>` |
 | Out of scope | `<out_of_scope>` |
 | Success criteria | **Nowhere.** |
 
@@ -90,6 +107,9 @@ Add an extra section only when its trigger fires:
 | Section | Add when |
 |---|---|
 | `<output_format>` | The outputs slot names a file type or a fixed layout |
+| `<knowledge_routing>` | A knowledge source is attached to the agent |
+| `<tool_use>` | The tool plan lists any tool, connector or workflow |
+| `<connected_agents>` | The brief names another agent this one hands work to |
 | `<escalation>` | The brief names a hand-off condition |
 | `<out_of_scope>` | The brief names something the agent must refuse |
 | `<data_handling>` | The inputs carry personal, financial or regulated data |
@@ -97,7 +117,55 @@ Add an extra section only when its trigger fires:
 
 Anything else gets its own section **only** when the brief holds something none of the sections above can hold without distorting it. Name the tag after what it holds, in `lower_snake_case`.
 
-Order when present: `output_format` after `instructions`; then `rules`, `escalation`, `out_of_scope`, `data_handling`, and `examples` last.
+Order when present: `output_format`, `knowledge_routing`, `tool_use` and `connected_agents` after `instructions`; then `rules`, `escalation`, `out_of_scope`, `data_handling`, and `examples` last.
+
+The middle three are the sections the **revise pass** exists for. They cannot be written accurately during the draft pass, because nothing they name exists yet.
+
+### `<knowledge_routing>`
+
+Say where an answer comes from, and what happens when it is not there. An agent with knowledge attached and no routing will answer confidently from its own reasoning when the source disagrees.
+
+```xml
+<knowledge_routing>
+Answer from the lending policy knowledge source for anything about limits,
+covenants or approval thresholds. Quote the clause you used.
+If the policy does not cover the question, say so and answer from general
+practice - and label which you did.
+If the policy and a document the user attached disagree, the policy wins.
+Say that the attachment conflicts, and where.
+Never state a policy position you cannot point to.
+</knowledge_routing>
+```
+
+### `<tool_use>`
+
+Say when to reach for a tool rather than answer, and what to do when a call goes wrong. Both failure branches matter: the orchestrator picks tools by description, so near-duplicate tools are the common cause of the wrong one firing.
+
+```xml
+<tool_use>
+Call the CRM tool for anything about a specific named customer - never answer
+from memory about a customer's record.
+Call it once. If it returns nothing, say the record was not found rather
+than retrying or guessing.
+If a call fails, tell the user what failed and what you could not determine.
+Do not carry on as though it succeeded.
+If two tools could serve a request, prefer the one that only reads.
+</tool_use>
+```
+
+### `<connected_agents>`
+
+Name each delegate and the exact signal that hands work to it. The failure to design against is an agent that either hoards work it should pass on, or passes on work it should have done.
+
+```xml
+<connected_agents>
+Hand quote and discount requests to the Pricing agent. Pass the customer
+name and the products asked about.
+Everything else stays with you, including questions that merely mention
+price in passing.
+When you hand off, tell the user you are doing so and why.
+</connected_agents>
+```
 
 ## Gap questions
 
@@ -127,7 +195,7 @@ Count the finished instructions. If over 8,000, do not silently truncate. Report
 1. **Move reference material out.** Anything the agent *consults* rather than *obeys* - a long template, a glossary, a policy extract - belongs in a skill or a knowledge source, not in instructions. This is the better fix, because it frees context on every turn rather than losing content.
 2. **Trim, lowest value first:** `<examples>`, then `<out_of_scope>`, then `<data_handling>`.
 
-Never trim `<role>`, `<tone>` or `<rules>` to fit. If the instructions cannot reach 8,000 without cutting those, the agent is doing too much and should be split.
+Never trim `<role>`, `<tone>`, `<rules>`, `<tool_use>` or `<knowledge_routing>` to fit. Those five decide what the agent does and where its answers come from; cutting them produces a shorter agent that is wrong. If the instructions cannot reach 8,000 without cutting them, the agent is doing too much and should be split.
 
 > Your instructions come to 9,400 characters. Two things in them are
 > reference, not behaviour: the 40-line memo template, and the product
@@ -137,19 +205,30 @@ Never trim `<role>`, `<tone>` or `<rules>` to fit. If the instructions cannot re
 
 ## Hand off
 
-Produce `instructions.md` as a file the user can download, containing the XML sections and nothing else - no preamble, no explanation, no code fence around the whole thing. Everything in that file gets pasted verbatim.
+### After the draft pass
 
-Then tell them where it goes:
+Show the instructions in the conversation and ask the user to correct them. **Produce no file.** Then say why, and what happens next:
+
+> This is the draft. Nothing goes into the Build tab yet - once you add tools
+> and skills, the sections that reference them have to be rewritten, and
+> anything you hand-edited in the box would be lost.
+>
+> Keep this conversation open. Run `copilot-find-skills-and-tools` next, then
+> `copilot-skill-creator` if the agent needs a packaged capability. Come back
+> here afterwards and I will revise these against what you actually built.
+
+### After the revise pass
+
+Produce `instructions.md` as a file the user can download, containing the XML sections and nothing else - no preamble, no explanation, no code fence around the whole thing. Everything in that file gets pasted verbatim.
 
 > Open your agent in Copilot Studio, go to the **Build** tab, select the space
 > under **Instructions**, paste the whole file, and select **Save**. Then test
 > it in the **Preview** tab.
-
-Finally, point at what is next:
-
-> Keep this conversation open. Run `copilot-find-skills-and-tools` next to see
-> what connectors and skills this agent needs, or `copilot-skill-creator` if it
-> needs a packaged capability of its own.
+>
+> Run `copilot-evaluation-creator` next to build the tests.
+>
+> If you add or remove a tool, skill or connected agent later, come back - the
+> instructions name them, so they go stale the moment those change.
 
 > Running in an IDE with file access? Write `instructions.md` into the agent
 > folder instead of handing it over for download.

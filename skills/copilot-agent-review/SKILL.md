@@ -1,6 +1,6 @@
 ---
 name: copilot-agent-review
-description: Interviews the user to design a Copilot Studio agent before any of it is built - role, users, tone, tasks, inputs, outputs, rules, escalation, success criteria and scope - then writes agent-brief.md. Use when the user wants to build a new agent, describes an agent idea in vague terms, or when another skill needs the agent brief.
+description: Interviews the user to design a Copilot Studio agent before any of it is built - role, users, tone, tasks, inputs, outputs, rules, escalation, connected agents, scope and success criteria - then writes agent-brief.md. Use when the user wants to build a new agent, describes an agent idea in vague terms, or when another skill needs the agent brief.
 license: MIT
 ---
 
@@ -8,7 +8,7 @@ license: MIT
 
 Interview the user until the design of their Copilot Studio agent is fully pinned down, then write the brief the rest of the toolchain builds from.
 
-Most agents fail because nobody decided what they were for. This skill refuses to let that happen: it holds ten **slots**, and does not finish until every slot holds a **concrete** answer.
+Most agents fail because nobody decided what they were for. This skill refuses to let that happen: it holds twelve **slots**, and does not finish until every slot holds a **concrete** answer.
 
 ## The rules of the interview
 
@@ -46,9 +46,10 @@ Re-asking is the job. A vague answer accepted now becomes a vague agent later.
 6. **Outputs**
 7. **Rules**
 8. **Escalation**
-9. **Out of scope**
-10. **Tone**
-11. **Success criteria**
+9. **Connected agents**
+10. **Out of scope**
+11. **Tone**
+12. **Success criteria**
 
 Tasks, inputs, outputs and rules are what the other skills consume. Spend the most effort there.
 
@@ -102,6 +103,10 @@ A slot is filled only when its acceptance test passes.
 - Rejected: "escalate if needed"
 - Accepted: "if the borrower is on the watchlist, stop and tell the user to contact the credit risk lead"
 
+**Connected agents** - names every other agent this one hands work to, and the exact signal that triggers each hand-off. "None" is a valid answer, but ask before accepting it: most agents that touch more than one business area have a neighbour.
+- Rejected: "it might talk to the pricing bot"
+- Accepted: "hands quote requests to the Pricing agent whenever the user asks for a price or a discount; everything else stays here"
+
 **Out of scope** - names at least one thing users will plausibly ask for that the agent must refuse, and what it says instead.
 - Rejected: "nothing really"
 - Accepted: "will not approve or decline a loan; says that is the committee's call and points back to the memo"
@@ -116,7 +121,7 @@ A slot is filled only when its acceptance test passes.
 
 ## Confirm before writing
 
-When all ten slots pass, show the user one line per slot and ask them to correct it:
+When all twelve slots pass, show the user one line per slot and ask them to correct it:
 
 > Here is what I have. Tell me anything that is wrong or missing, or say "write it" and I will produce the brief.
 
@@ -141,6 +146,7 @@ Produce `agent-brief.md` as a file the user can download, in exactly this shape:
 ## Outputs
 ## Rules
 ## Escalation
+## Connected agents
 ## Success criteria
 ## Out of scope
 
