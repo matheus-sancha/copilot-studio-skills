@@ -152,6 +152,21 @@ When the skill produces a file, read the playbook for that format and adapt its 
 
 Read only the one you need. The fragment is a starting point - adapt it to this agent's actual output, and keep the rules.
 
+### When the skill needs to write the file in code
+
+Four working templates, for the formats where precise control is sometimes worth the code:
+
+| Format | Template |
+|---|---|
+| Excel | [scripts/xlsx_template.py](scripts/xlsx_template.py) |
+| Word | [scripts/docx_template.py](scripts/docx_template.py) |
+| PowerPoint | [scripts/pptx_template.py](scripts/pptx_template.py) |
+| PDF | [scripts/pdf_template.py](scripts/pdf_template.py) |
+
+Each runs as-is, has a clearly marked block to adapt, and already obeys its playbook's rules. Copy the one you need into the generated skill's own `scripts/` folder and edit the marked block - do not ship it unchanged, and do not bundle a template the skill does not use.
+
+Markdown and HTML have no template: neither needs a library, and writing them directly is simpler than any code would be.
+
 ## Check before handing over
 
 Run this list and fix anything that fails:

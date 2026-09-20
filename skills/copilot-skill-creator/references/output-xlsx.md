@@ -37,3 +37,7 @@ If the user asked a question and the spreadsheet is the evidence, lead the chat 
 ## Size
 
 Keep the file under 10 MB - above that Copilot Studio will not surface it in the response. For a long export, split by period or category into several files rather than one large one.
+
+## If you need to write it in code
+
+The harness creates this format natively; reach for code only when you need control it cannot give - an exact template, a formula, a specific format. [`scripts/xlsx_template.py`](../scripts/xlsx_template.py) is a working starting point using `openpyxl`, and already obeys the rules above.

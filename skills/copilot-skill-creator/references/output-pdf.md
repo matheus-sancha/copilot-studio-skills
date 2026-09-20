@@ -32,3 +32,7 @@ If the source is a scanned or image-based PDF, the text cannot be read. Say so p
 ## Size
 
 Keep the file under 10 MB. For long reports, split by section or period - one deliverable per chapter - rather than producing one oversized file that will not be surfaced at all.
+
+## If you need to write it in code
+
+The harness creates this format natively; reach for code only when you need control it cannot give - an exact template, a formula, a specific format. [`scripts/pdf_template.py`](../scripts/pdf_template.py) is a working starting point using `reportlab`, and already obeys the rules above.

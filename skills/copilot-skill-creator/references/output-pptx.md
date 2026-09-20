@@ -44,3 +44,7 @@ If the user supplied a branded template or an example deck, match its section or
 ## Size
 
 Keep the file under 10 MB. Images are almost always the cause - if the deck is heavy, say so and offer to reduce the image resolution.
+
+## If you need to write it in code
+
+The harness creates this format natively; reach for code only when you need control it cannot give - an exact template, a formula, a specific format. [`scripts/pptx_template.py`](../scripts/pptx_template.py) is a working starting point using `python-pptx`, and already obeys the rules above.

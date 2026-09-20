@@ -1,6 +1,6 @@
 ---
 name: copilot-agent-review
-description: Interviews the user to design a Copilot Studio agent before any of it is built - role, users, tone, tasks, inputs, outputs, rules, escalation, connected agents, scope and success criteria - then writes agent-brief.md. Use when the user wants to build a new agent, describes an agent idea in vague terms, or when another skill needs the agent brief.
+description: Interviews the user to design a Copilot Studio agent before any of it is built - role, users, tone, tasks, inputs, outputs, rules, escalation, knowledge, connected agents, scope and success criteria - then writes agent-brief.md. Use when the user wants to build a new agent, describes an agent idea in vague terms, or when another skill needs the agent brief.
 license: MIT
 ---
 
@@ -8,7 +8,7 @@ license: MIT
 
 Interview the user until the design of their Copilot Studio agent is fully pinned down, then write the brief the rest of the toolchain builds from.
 
-Most agents fail because nobody decided what they were for. This skill refuses to let that happen: it holds twelve **slots**, and does not finish until every slot holds a **concrete** answer.
+Most agents fail because nobody decided what they were for. This skill refuses to let that happen: it holds thirteen **slots**, and does not finish until every slot holds a **concrete** answer.
 
 ## The rules of the interview
 
@@ -43,13 +43,14 @@ Re-asking is the job. A vague answer accepted now becomes a vague agent later.
 3. **Documents** - see below
 4. **Tasks**
 5. **Inputs**
-6. **Outputs**
-7. **Rules**
-8. **Escalation**
-9. **Connected agents**
-10. **Out of scope**
-11. **Tone**
-12. **Success criteria**
+6. **Knowledge**
+7. **Outputs**
+8. **Rules**
+9. **Escalation**
+10. **Connected agents**
+11. **Out of scope**
+12. **Tone**
+13. **Success criteria**
 
 Tasks, inputs, outputs and rules are what the other skills consume. Spend the most effort there.
 
@@ -91,6 +92,10 @@ A slot is filled only when its acceptance test passes.
 - Rejected: "documents"
 - Accepted: "a borrower PDF financial pack emailed by the relationship manager, always; plus last year's memo, sometimes"
 
+**Knowledge** - names what the agent must look things up in, and what it does when the answer is not there. "None" is valid, but ask: an agent that answers questions about anything written down has a knowledge source, whether or not the user has called it that.
+- Rejected: "it should know our policies"
+- Accepted: "the lending policy PDF on SharePoint, for limits and approval thresholds; if the policy does not cover it, say so rather than guessing"
+
 **Outputs** - every output names its format, who reads it, and one concrete example of a real one.
 - Rejected: "reports for management"
 - Accepted: "a 2-page docx credit memo read by the risk committee, e.g. the Acme Ltd memo from March"
@@ -121,7 +126,7 @@ A slot is filled only when its acceptance test passes.
 
 ## Confirm before writing
 
-When all twelve slots pass, show the user one line per slot and ask them to correct it:
+When all thirteen slots pass, show the user one line per slot and ask them to correct it:
 
 > Here is what I have. Tell me anything that is wrong or missing, or say "write it" and I will produce the brief.
 
@@ -143,6 +148,7 @@ Produce `agent-brief.md` as a file the user can download, in exactly this shape:
 ## Tone
 ## Tasks
 ## Inputs
+## Knowledge
 ## Outputs
 ## Rules
 ## Escalation

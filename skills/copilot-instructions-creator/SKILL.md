@@ -40,7 +40,7 @@ Do not interview the user yourself. That is the other skill's job, and doing it 
 
 ## What goes where
 
-The brief has twelve slots. They do not map one-to-one:
+The brief has thirteen slots. They do not map one-to-one:
 
 | Brief slot | Where it lands |
 |---|---|
@@ -49,6 +49,7 @@ The brief has twelve slots. They do not map one-to-one:
 | Tone | `<tone>` |
 | Tasks | `<tasks>` |
 | Inputs | `<tasks>` - each task names what it receives |
+| Knowledge | `<knowledge_routing>` |
 | Outputs | `<tasks>`, and `<output_format>` when a format is fixed |
 | Rules | `<rules>` |
 | Escalation | `<escalation>` |
@@ -107,7 +108,7 @@ Add an extra section only when its trigger fires:
 | Section | Add when |
 |---|---|
 | `<output_format>` | The outputs slot names a file type or a fixed layout |
-| `<knowledge_routing>` | A knowledge source is attached to the agent |
+| `<knowledge_routing>` | The brief names a knowledge source, or one is attached to the agent |
 | `<tool_use>` | The tool plan lists any tool, connector or workflow |
 | `<connected_agents>` | The brief names another agent this one hands work to |
 | `<escalation>` | The brief names a hand-off condition |
@@ -119,7 +120,7 @@ Anything else gets its own section **only** when the brief holds something none 
 
 Order when present: `output_format`, `knowledge_routing`, `tool_use` and `connected_agents` after `instructions`; then `rules`, `escalation`, `out_of_scope`, `data_handling`, and `examples` last.
 
-The middle three are the sections the **revise pass** exists for. They cannot be written accurately during the draft pass, because nothing they name exists yet.
+`<knowledge_routing>` and `<connected_agents>` come from the brief, so the draft pass can write both. `<tool_use>` cannot - nothing it names exists until the tool plan does, which is what the **revise pass** is for.
 
 ### `<knowledge_routing>`
 

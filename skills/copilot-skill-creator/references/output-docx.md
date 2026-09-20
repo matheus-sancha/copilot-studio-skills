@@ -44,3 +44,7 @@ If the user supplied an existing document, match its section names and order exa
 ## Size
 
 Keep the file under 10 MB.
+
+## If you need to write it in code
+
+The harness creates this format natively; reach for code only when you need control it cannot give - an exact template, a formula, a specific format. [`scripts/docx_template.py`](../scripts/docx_template.py) is a working starting point using `python-docx`, and already obeys the rules above.
