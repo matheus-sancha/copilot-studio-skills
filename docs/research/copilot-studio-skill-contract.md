@@ -132,6 +132,60 @@ File delivery to the user is automatic and needs no configuration: "You don't co
 
 **Unverified:** whether a Python file bundled in a skill's `scripts/` folder is executed by the GitHub Copilot harness the way Claude Code would run it. Microsoft documents that packages *may* contain scripts and that a command-running tool exists, but no Learn page states that bundled skill scripts are directly executable, nor names the Python runtime or its installed libraries. Design the skills so that **no bundled script is load-bearing** until this is tested in a live tenant.
 
+## Addendum — the adjacent surface (added while resolving [issue #9](https://github.com/matheus-sancha/copilot-studio-skills/issues/9))
+
+Microsoft documents the same Agent Skills format far more precisely for **custom skills in declarative agents** (Agent Builder / Microsoft 365 Copilot) than it does for Copilot Studio. That is a *different product surface*, so the numbers below are a strong signal rather than proof for the GitHub Copilot harness — [issue #12](https://github.com/matheus-sancha/copilot-studio-skills/issues/12) exists to confirm them in a live tenant. Where Copilot Studio is silent, these are the best available figures to design against.
+
+### Package shape — `SKILL.md` at the zip root
+
+```text
+my-skill.zip
+|-- SKILL.md              # required
+|-- <resource files>      # optional
+`-- <scripts or folders>  # optional
+```
+
+Source: [agent-builder-add-skills](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agent-builder-add-skills). `SKILL.md` sits at the **root of the archive**, not inside a wrapper folder. "Upload the complete `.zip` package. Don't upload `SKILL.md` by itself."
+
+**One zip holds one skill.** There is no documented multi-skill archive. Copilot Studio's own failure table treats skill name and folder name as one-to-one ("Two skills in the same agent use the same folder name"), and the spec requires `name` to match the parent directory. Six skills means six packages and six uploads.
+
+### Support matrix
+
+| Item | Agent Builder | Agents Toolkit |
+|---|---|---|
+| Maximum skills per agent | **8** | **8** |
+| Skill package | Compressed `.zip`, maximum 50 MB | Skill directory; `.zip` isn't supported |
+| Maximum file size | 25 MB per file | Complete app package limited to 10 MB |
+| Maximum files per package | 350 files across all skills | 350 files across all skills |
+| Directory hierarchy | "Maximum directory depth is 3" | "Maximum directory depth is 3" |
+| Reuse across agents | "Not supported at this stage of the preview" | Same |
+
+Source: [declarative-agent-skills — Support matrix](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/declarative-agent-skills).
+
+**Skill instructions "must be under 20,000 characters."** This is the only concrete instruction cap Microsoft publishes anywhere for the format. Treat it as the design budget per `SKILL.md`.
+
+The 8-skill ceiling is the sharper constraint for this repo: six skills consume 75% of an agent's budget, leaving two slots for the user's own. It is an argument for the router advising users to load only the skill they need next, rather than all six at once.
+
+### Scripts do execute — inside a hard sandbox
+
+This resolves part of what the main findings above marked unverified. Supported types:
+
+| Category | File types |
+|---|---|
+| Instructions and resources | `.json`, `.xml`, `.yaml`, `.yml`, `.ini`, `.config`, `.utf8`, `.docx`, `.doc`, `.docm`, `.pdf`, `.txt`, `.rtf`, `.md`, `.ppt`, `.pptx`, `.ppsm`, `.xlsx`, `.xls`, `.xlsm`, `.csv`, `.tsv`, `.html`, `.htm`, `.png`, `.jpg`, `.jpeg`, `.gif`, `.bmp`, `.log` |
+| Scripts and binaries | `.py`, `.js`, `.mjs`, `.cjs`, `.ts`, `.mts`, `.sh`, `.bash` |
+
+Sandbox limits ([declarative-agent-skills — Script execution sandbox](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/declarative-agent-skills)):
+
+- Internet or network access from scripts: "Not supported. The sandbox has no network access at runtime."
+- Package installation: "Not supported. A skill can't install packages at runtime."
+- Preinstalled packages: "A skill can use packages already present in the sandbox. **Don't depend on a package unless its availability is confirmed.**"
+- Connectors, API plugins and MCP servers: reachable by the agent through the orchestrator, but "Scripts can't call them through the sandbox."
+
+The conclusion in the main findings stands and is now better founded: a bundled script may run, but since no package list is published and none can be installed, **no bundled script should be load-bearing**. Prefer instructions the harness executes with its native Office and PDF file creation.
+
+Also noted: skill files are stored in "tenant-scoped SharePoint Embedded containers", sensitivity labels are retained and honored, and — a live preview bug — "Agents that have both skills and embedded files aren't supported yet."
+
 ## Billing
 
 Every page in the GitHub Copilot harness documentation set repeats the same notice: "Usage-based billing applies to using, building, testing, and evaluating agents. These actions might consume Copilot Credits" ([skills-overview](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/skills-overview)). Uploading this repo's six skills and running an interview through them costs credits, and the README should not pretend otherwise.
